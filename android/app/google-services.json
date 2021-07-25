@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "223806099506",
+    "firebase_url": "https://phia-monitoring-tool-default-rtdb.firebaseio.com",
+    "project_id": "phia-monitoring-tool",
+    "storage_bucket": "phia-monitoring-tool.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223806099506:android:03efb5c22331608383ac2b",
+        "android_client_info": {
+          "package_name": "com.aims.aims_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223806099506-32labsnn8nmm86lhgqpos8602aud6lpb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aims.aims_mobile",
+            "certificate_hash": "3f2cd9698a75d0d620d6fccd69ecd48f4a62704d"
+          }
+        },
+        {
+          "client_id": "223806099506-92tjo46c32d9d7p8a7qt67c3mka5oi39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aims.aims_mobile",
+            "certificate_hash": "d80ee0ec3c05e4f9d86fb9ff005bd15166a4ddc9"
+          }
+        },
+        {
+          "client_id": "223806099506-rq7k7mt06qpl4p0iv063nbgfs5985vn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeF-UV7NvyD97Qp8fUIO_XF87X9upaOGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223806099506-rq7k7mt06qpl4p0iv063nbgfs5985vn4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

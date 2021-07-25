@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "223806099506",
+    "project_id": "phia-monitoring-tool",
+    "storage_bucket": "phia-monitoring-tool.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223806099506:android:03efb5c22331608383ac2b",
+        "android_client_info": {
+          "package_name": "com.aims.aims_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223806099506-69fk69v46n348ragt4bbj2devua0tqri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aims.aims_mobile",
+            "certificate_hash": "04b4a148b1e17696382f7e74f1085333ee797cef"
+          }
+        },
+        {
+          "client_id": "223806099506-rq7k7mt06qpl4p0iv063nbgfs5985vn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeF-UV7NvyD97Qp8fUIO_XF87X9upaOGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223806099506-rq7k7mt06qpl4p0iv063nbgfs5985vn4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
