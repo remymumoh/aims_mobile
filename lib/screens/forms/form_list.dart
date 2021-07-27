@@ -72,7 +72,7 @@ class FormListState extends State {
     bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       // if the form does not exist in the db, it's a new entry, so pass predefined strings
       if (!exists) {
-        return BaisMonitor(this.template, new DbForm(id: null, form_name: this.template.form_name, data_content: this.template.form_content, section_names: this.template.form_sections));
+        return BaisMonitor(this.template, new DbForm(id: null, form_name: this.template.form_name, data_content: this.template.form_content, section_names: this.template.form_sections), false);
       }
       // if 'exists' is true, the form exists in the db, so access the saved data instead
       // return BaisMonitor(this.template, dbForms[index]);
@@ -80,7 +80,7 @@ class FormListState extends State {
       if (template.form_name == "ZAMPHIA Incident Report") {
         return BaisvSummary(template, template.form_name, dbForms[index]);
       } else {
-        return BaisMonitor(this.template, dbForms[index]);
+        return BaisMonitor(this.template, dbForms[index], true);
       }
     }));
     // if the result's not null (user hits back button) and if it's true (save

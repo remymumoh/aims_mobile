@@ -28,14 +28,15 @@ class FormItem {
 
 // ignore: must_be_immutable
 class BaisMonitor extends StatefulWidget {
-  BaisMonitor(this.template, this.dbForm);
+  BaisMonitor(this.template, this.dbForm, this.exists);
 
   FormTemplate template;
   DbForm dbForm;
+  bool exists;
 
   @override
   _BaisMonitorState createState() =>
-      _BaisMonitorState(this.template, this.dbForm);
+      _BaisMonitorState(this.template, this.dbForm, this.exists);
 }
 
 List<FormItem> generateItems(
@@ -200,7 +201,7 @@ class _BaisMonitorState extends State<BaisMonitor> {
                             maximumStrokeWidth: _maxWidth,
                             strokeColor: _strokeColor,
                             backgroundColor: _backgroundColor,
-                            onSignStart: _handleOnSignStart,
+                            onDrawStart: _handleOnSignStart,
                             key: _signaturePadKey),
                         width: MediaQuery.of(context).size.width < 306
                             ? MediaQuery.of(context).size.width
@@ -661,6 +662,7 @@ class _BaisMonitorState extends State<BaisMonitor> {
 
   FormTemplate template;
   DbForm dbForm;
+  final bool exists;
   bool saving = false, submitting = false;
 
   DbForm form;
@@ -674,7 +676,7 @@ class _BaisMonitorState extends State<BaisMonitor> {
 
   List<String> sections = <String>[];
   bool formIsValid = false;
-  _BaisMonitorState(this.template, this.dbForm);
+  _BaisMonitorState(this.template, this.dbForm, this.exists);
 
   // copy used to display form, with or without hidden supervisor-only sections
   List<ExpansionPanel> schemaExpansions = <ExpansionPanel>[];
@@ -700,6 +702,7 @@ class _BaisMonitorState extends State<BaisMonitor> {
         },
         body: new JsonSchema(
           form: form.form,
+          exists: this.exists,
           onChanged: (dynamic response) {
             this.responses[form.index] = response;
             // isFormValid();

@@ -16,7 +16,7 @@ class JsonSchema extends StatefulWidget {
     this.decorations = const {},
     this.buttonSave,
     this.actionSave, this.isValid, this.ptsPoss, this.currentPts, this.isSupervisor, this.supervisorAction,
-    this.sectionIndex
+    this.sectionIndex, this.exists
   });
 
   final Map errorMessages;
@@ -34,6 +34,7 @@ class JsonSchema extends StatefulWidget {
   final bool isSupervisor;
   final Function supervisorAction;
   final int sectionIndex;
+  final bool exists;
 
   static bool sectionIsSupervisorOnly(String formStr) {
     var decodedForm = json.decode(formStr);
@@ -43,7 +44,7 @@ class JsonSchema extends StatefulWidget {
 
   @override
   _CoreFormState createState() =>
-      new _CoreFormState(formMap ?? json.decode(form), isSupervisor);
+      new _CoreFormState(formMap ?? json.decode(form), isSupervisor, exists);
 }
 
 class _CoreFormState extends State<JsonSchema> {
@@ -59,6 +60,7 @@ class _CoreFormState extends State<JsonSchema> {
   List<bool> validQs = <bool>[];
   bool runInit = true;
   bool isSupervisor;
+  final bool exists;
   bool supervisorOnly = false;
   Function superVisorAction;
   num sectionPts = 0;
@@ -128,7 +130,6 @@ class _CoreFormState extends State<JsonSchema> {
       if (supervisorRestricted && isSupervisor != true) {
         continue;
       }
-      // validQs[count] = ((item['required'] == null || !item['required']) || (item['value'] != null && item['value'].length > 0));
 
       if (item['type'] == "Input" ||
           item['type'] == "Password" ||
@@ -733,7 +734,7 @@ class _CoreFormState extends State<JsonSchema> {
     }
   }
 
-  _CoreFormState(this.formGeneral, this.isSupervisor);
+  _CoreFormState(this.formGeneral, this.isSupervisor, this.exists);
 
   @override
   void initState() {
@@ -747,6 +748,16 @@ class _CoreFormState extends State<JsonSchema> {
       sectionPts = 0;
       getPtsPoss();
     }
+
+    // set points earned and total points for saved forms
+    // check if form has been saved or is new AND if last section is the summary
+    int lastIndex = formGeneral['fields'].length - 1;
+    if (exists && formGeneral['fields'][lastIndex]['type'].toString().toLowerCase() == "summary") {
+      List<String> nums = formGeneral['fields'][lastIndex]['value'].toString().split(" ");
+      sectionPts = int.parse(nums[0]);
+      sectionTotal = int.parse(nums[2]);
+    }
+
     super.initState();
   }
 

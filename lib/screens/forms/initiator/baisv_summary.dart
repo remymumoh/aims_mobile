@@ -344,7 +344,7 @@ class _BaisvSummaryState extends State<BaisvSummary> {
     bool result = await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       // return ReportsView(this.template.firstWhere((element) => element.form_name == this.clusters[index].form_name), this.clusters[index]);
       // return ReportSummary(this.clusters[index].form_name, this.clusters[index]);
-      return BaisMonitor(this.template, this.dbForm);
+      return BaisMonitor(this.template, this.dbForm, true);
     }));
     if (result == true) {
       this.dbForm = await db.getFormById(dbForm.id);
