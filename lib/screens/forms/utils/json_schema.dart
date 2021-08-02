@@ -317,14 +317,28 @@ class _CoreFormState extends State<JsonSchema> {
                       if (formGeneral['fields'][count]['isDisabled'] != true) {
                         this.setState(() {
                           radioValue = value;
+                          int oldValue = formGeneral['fields'][count]['value'];
                           formGeneral['fields'][count]['value'] = value;
                           // if question is a yes/no/partial question and counts towards total (no followups), use switch case
                           if (formGeneral['fields'][count]['ynpQuestion'] == true) {
                             switch (value) {
                               case 4: // if N/A is chosen AND the rest of the associated subquestions are marked as N/A,
-                              // reduce total points possible to not count this question towards the total score
-                              // else, count as yes and continue as normal
-                              // TODO: add logic for N/A answers
+                                // reduce total points possible to not count this question towards the total score
+                                // else, count as yes and continue as normal
+                                // TODO: add logic for N/A answers
+                                formGeneral['fields'][count]['ignore'] =
+                                true;
+                                // if question switches from yes to N/A, subtract points for this question
+                                if (oldValue == 1) {
+                                  sectionPts -= formGeneral['fields'][count]['totals'];
+                                } else if (oldValue == 3) { // else if question switches from partial to N/A, subtract 1 point
+                                  sectionPts -= 1;
+                                }
+                                sectionTotal -= formGeneral['fields'][count]['totals'];
+                                formGeneral['fields'][count]['points'] = 0;
+                                widget.ptsPoss(-formGeneral['fields'][count]['totals'], widget.sectionIndex);
+                                changeScore();
+                                break;
                               case 1: // yes or N/A (if something's not applicable, then it shouldn't count against survey score)
                               // if question is marked as "ignore" (N/A was previously chosen) then
                               // remove "ignore" and count points towards total
@@ -333,10 +347,13 @@ class _CoreFormState extends State<JsonSchema> {
                                   formGeneral['fields'][count]['totals'];
                                   formGeneral['fields'][count]['ignore'] =
                                   false;
+                                  widget.ptsPoss(formGeneral['fields'][count]['totals'], widget.sectionIndex);
                                 }
                                 // if the question is not a yes/no/partial or subquestion (subquestion or ynpQuestion), parse as normal
                                 if (formGeneral['fields'][count]['subquestion'] != true && formGeneral['fields'][count]['ynpQuestion'] == true && formGeneral['fields'][count]['totals'] != null) {
                                   num diff = formGeneral['fields'][count]['totals'] - (formGeneral['fields'][count]['points'] == null ? 0 : formGeneral['fields'][count]['points']);
+                                  log("totals is: ${formGeneral['fields'][count]['totals']}");
+                                  log("2nd half is: ${(formGeneral['fields'][count]['points'] == null ? 0 : formGeneral['fields'][count]['points'])}");
                                   log("selected yes, diff is $diff");
                                   sectionPts += diff;
                                   log("selected yes, is integer: ${sectionPts == sectionPts.roundToDouble()}");
@@ -365,6 +382,7 @@ class _CoreFormState extends State<JsonSchema> {
                                 if (formGeneral['fields'][count]['ignore'] == true) {
                                   sectionTotal += formGeneral['fields'][count]['totals'];
                                   formGeneral['fields'][count]['ignore'] = false;
+                                  widget.ptsPoss(formGeneral['fields'][count]['totals'], widget.sectionIndex);
                                 }
                                 // if the question is not a yes/no/partial subquestion (subquestion and ynpQuestion), parse as normal
                                 if (formGeneral['fields'][count]['subquestion'] != true && formGeneral['fields'][count]['ynpQuestion'] == true) {
@@ -400,6 +418,7 @@ class _CoreFormState extends State<JsonSchema> {
                                 if (formGeneral['fields'][count]['ignore'] == true) {
                                   sectionTotal += formGeneral['fields'][count]['totals'];
                                   formGeneral['fields'][count]['ignore'] = false;
+                                  widget.ptsPoss(formGeneral['fields'][count]['totals'], widget.sectionIndex);
                                 }
                                 // if the question is not a yes/no/partial subquestion (subquestion and ynpQuestion), parse as normal
                                 if (formGeneral['fields'][count]['subquestion'] != true && formGeneral['fields'][count]['ynpQuestion'] == true) {
@@ -705,6 +724,7 @@ class _CoreFormState extends State<JsonSchema> {
     // all yes answers -> full points awarded
     // all no answers -> no points awarded
     // some yes, some no, no partial answers -> 1 point awarded
+    // N/A is chosen (for sub) -> don't count towards total
     // all N/A answers -> do not count parent question towards pt total
     // ex: if a 21 pt question has a 2 pt question marked as N/A, take total out of 19 pts instead of 21
     for (var sub in subquestions) {
@@ -738,10 +758,12 @@ class _CoreFormState extends State<JsonSchema> {
 
   @override
   void initState() {
+    int tempTotal = 0;
     for (int i = 0; i < formGeneral['fields'].length; i++) {
       validQs.add(false);
       sectionTotal += formGeneral['fields'][i]['totals'] != null ? formGeneral['fields'][i]['totals'] : 0;
     }
+    log("tempTotal: $tempTotal");
     includeScore = formGeneral['includeScore'] ?? false;
     requiresValidation = formGeneral['autoValidated'] ?? false;
     if (includeScore) {
@@ -754,8 +776,16 @@ class _CoreFormState extends State<JsonSchema> {
     int lastIndex = formGeneral['fields'].length - 1;
     if (exists && formGeneral['fields'][lastIndex]['type'].toString().toLowerCase() == "summary") {
       List<String> nums = formGeneral['fields'][lastIndex]['value'].toString().split(" ");
-      sectionPts = int.parse(nums[0]);
-      sectionTotal = int.parse(nums[2]);
+      try {
+        sectionPts = int.parse(nums[0]); // if the numerator is a number, parse it. else, use default of 0
+      } on Exception catch (_) {
+        sectionPts = 0;
+      } on RangeError catch (_) {
+        sectionPts = 0;
+      }
+      try {
+        sectionTotal = int.parse(nums[2]); // if the denominator is a number, parse it. else use value of tempTotal
+      } on Exception catch (_) { } on RangeError catch (_) { }
     }
 
     super.initState();
